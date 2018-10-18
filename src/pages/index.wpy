@@ -1,0 +1,63 @@
+<template>
+  <view class="container index-main" @tap="clickHandle">
+    <view>
+      hello world
+    </view>
+    <!-- 列表 -->
+    <view class="list-item" wx:for-items="{{ listData }}" wx:key="{{ item.id }}">
+      <view> {{item.name}} </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect, getStore } from 'wepy-redux'
+  import { getListData } from '../store/actions'
+
+  // 实例化 store
+  const store = getStore()
+
+  @connect({
+    listData () {
+      return state.counter.listData
+    }
+  }, {
+    getListData
+  })
+
+  export default class Index extends wepy.page {
+    // 页面配置
+    config = {
+      navigationBarTitleText: '小程序标题',
+      disableScroll: true
+    }
+    // 页面变量
+    data = {}
+    // 页面组件
+    components = {}
+    // 计算变量
+    computed = {}
+    // 方法
+    methods = {}
+
+    // ----------- 自定义方法 S ----------- //
+    /**
+     * getListData 获取列表数据
+     */
+    getListData (hostId) {
+      let param = { id: 1 }
+      store.dispatch(getListData(param))
+    }
+    // ----------- 自定义方法 E ----------- //
+
+    // 监视器
+    watch = {}
+    // 页面开始加载时
+    onLoad (option) {
+      this.getListData()
+    }
+  }
+</script>
+
+<style lang="less">
+</style>

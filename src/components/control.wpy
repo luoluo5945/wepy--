@@ -1,0 +1,255 @@
+<template>
+ <!--  <view class="counter {{style}}">
+    <button @tap="plus" size="mini">  +  </button>
+    <button @tap="minus" size="mini">  -  </button>
+    <button @tap="incNum" size="mini">  INCREMENT  </button>
+    <button @tap="decNum" size="mini">  DECREMENT  </button>
+    <button @tap="asyncInc" size="mini">  ASYNC INCREMENT  </button>
+    <text class="count"> {{num}} </text>
+    <text class="count"> {{stateNum}} </text>
+    <text class="count"> {{asyncNum}} </text>
+  </view> -->
+  <view class="bottom-footer">
+    <view class="bottom-footer-main">
+      <image class="music-icon-image" src="../static/image/music-icon.svg"></image>
+      <view class="song-msg">
+        <text class="song-text song-title">name</text>
+        <text class="song-text song-introduction">description</text>
+      </view>
+      <view class="footer-btn" class="active footer-btn">
+        <view class="bottom-icon">
+          <image class="fn-icon stop-icon" src="../static/image/stop.svg"></image>
+          <image class="fn-icon play-icon" src="/static/image/play2.svg"></image>
+          <view id="voiceBarOut" class="voice-slider-out">
+            <slider id="voiceBarSlider" class="voice-slider" block-size="12" selected-color="#BE8D5F" backgroundColor="#EFEFEF" value="50"/>
+            <view id="voiceBarSan" class="san_xia"></view>
+          </view>
+          <image id="voiceBar" class="fn-icon trumpet-icon" src="../static/image/trumpet.svg"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect, getStore } from 'wepy-redux'
+  import { getHostStatus } from '../store/actions'
+  // 实例化 store
+  const store = getStore()
+
+  @connect({
+    hostStatus (state) {
+      return state.counter.hostStatus
+    }
+  }, {
+    getHostStatus
+  })
+
+  export default class Counter extends wepy.component {
+    props = {
+      num: {
+        type: [Number, String],
+        coerce: function (v) {
+          return +v
+        },
+        default: 50
+      }
+    }
+
+    data = {}
+
+    events = {
+      'index-broadcast': (...args) => {
+        let $event = args[args.length - 1]
+        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+      }
+    }
+
+    // 计算变量
+    computed = {
+      hostStatus () {
+        return store.getState().counter.hostStatus
+      }
+    }
+
+    watch = {
+      hostStatus (val) {
+        // if (val.code === 1) {
+        //   this.hostStatus.name = val.data.name
+        //   this.hostStatus.description = val.data.description
+        //   this.hostStatus.id = val.data.id
+        //   this.hostStatus.songsheet_id = val.data.songsheet_id
+        //   this.hostStatus.icon = val.data.icon
+        //   this.hostStatus.playStatus = val.data.play_status
+        //   this.hostStatus.volume = val.data.volume
+        // } else {
+        //   this.hostStatus = {
+        //     name: '',
+        //     description: '',
+        //     id: '',
+        //     songsheet_id: '',
+        //     icon: '',
+        //     playStatus: '',
+        //     volume: ''
+        //   }
+        // }
+      }
+    }
+
+    methods = {
+      plus () {
+        this.num = this.num + 1
+        console.log(this.$name + ' plus tap')
+
+        this.$emit('index-emit', 1, 2, 3)
+      },
+      minus () {
+        this.num = this.num - 1
+        console.log(this.$name + ' minus tap')
+      }
+    }
+    // 页面开始加载时
+    onLoad (option) {
+      // 获取主机状态
+      store.dispatch(getHostStatus({ hostId: 1 }))
+      console.log('hostStatus', this.hostStatus)
+    }
+  }
+</script>
+<style lang="less">
+  .bottom-footer {
+    background: #f7f7f7;
+    box-sizing: border-box;
+    height: 100rpx;
+    width: 100%;
+    position: fixed;
+    bottom: 0rpx;
+    left: 0rpx;
+    padding-right: 0;
+    .bottom-footer-main {
+      box-sizing: border-box;
+      height: 100rpx;
+      width: 100%;
+      box-shadow: 0px 0px 10rpx rgba(3, 0, 0, 0.06);
+      background: rgba(255, 254, 254, 1);
+      text-align: right;
+      line-height: 100rpx;
+      .music-icon-image {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 20rpx;
+        margin: auto;
+        width: 70rpx;
+        height: 70rpx;
+      }
+      .song-msg {
+        .song-text {
+          display: block;
+          text-align: left;
+          padding-left: 100rpx;
+          padding-right: 180rpx;
+          font-family: MicrosoftYaHei;
+          color: #333333;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .song-title {
+          height: 60rpx;
+          font-size: 26rpx;
+          line-height: 80rpx;
+
+        }
+        .song-introduction {
+          height: 40rpx;
+          font-size: 18rpx;
+          line-height: 25rpx;
+        }
+      }
+      .footer-text {
+        font-size: 24rpx;
+        font-family: MicrosoftYaHei;
+        color: rgba(189, 141, 94, 1);
+        position: absolute;
+        top: 0;
+        right: 210rpx;
+      }
+      .footer-btn {
+        border-radius: 0;
+        line-height: 100rpx;
+        text-align: center;
+        font-size: 24rpx;
+        font-family: MicrosoftYaHei;
+        color: #fff;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200rpx;
+        height: 100rpx;
+        background: linear-gradient(to right, #EDC694, #BD8D5E);
+        &.active {
+          background: #fff;
+          .bottom-icon {
+            height: 100%;
+            width: 100%;
+            position: relative;
+            .fn-icon {
+              width: 38rpx;
+              height: 38rpx;
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              margin: auto;
+            }
+            .stop-icon {
+              left: 0rpx;
+            }
+            .play-icon {
+              left: 65rpx;
+            }
+            .trumpet-icon {
+              left: 130rpx;
+            }
+            .voice-slider-out {
+              width: 150rpx;
+              height: 46rpx;
+              line-height: 46rpx;
+              border: 2rpx solid #EFEFEF;
+              border-radius: 8rpx;
+              position: absolute;
+              top: -50rpx;
+              right: 10rpx;
+              text-align: center;
+              .voice-slider {
+                width: 120rpx;
+                margin: 0 auto;
+                margin-top: 6rpx;
+              }
+              .san_xia {
+                width: 0;
+                height: 0;
+                border-left: 20rpx solid transparent;
+                border-right: 20rpx solid transparent;
+                border-top: 20rpx solid #EFEFEF;
+                border-radius: 4rpx;
+                position: absolute;
+                bottom: -20rpx;
+                right: 18rpx;
+                &::after {
+                  content: '';
+                  position: absolute;
+                  top: -21rpx;
+                  left: -19rpx;
+                  border-left: 20rpx solid transparent;
+                  border-right: 20rpx solid transparent;
+                  border-top: 20rpx solid #FFFFFF;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+</style>
