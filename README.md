@@ -64,13 +64,9 @@ module.exports = {
 ```
 ###   3. store结构有三部分actions、reducers、types                                
  ```mermaid
-graph LR
-A((store)) --> B(actions)
-A --> C(reducers)
-A --> D(types)
-B --> E(定义异步请求)
-C --> G(对变量进行操作或赋值)
-D --> F(定义函数名和变量名)
+actions --> (定义异步请求)
+reducers --> (对变量进行操作或赋值)
+types --> (定义函数名和变量名)
 ```
 > 在types中定义所有异步或者非异步的数据，以及函数名
 > 在reducers中定义对非异步数据的操作，以及对types中变量的赋值
